@@ -4,6 +4,8 @@ import Car from "./Car/Car";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 import Counter  from "./Counter/Counter";
 
+export const ClickedContext = React.createContext(false)
+
 class App extends Component{
 
   constructor(props) {
@@ -12,10 +14,11 @@ class App extends Component{
 
     // создаем стэйт
     this.state = {
+      clicked: false,
       cars: [
         {name: 'Ford', year: 2018},
-        // {name: 'BMW', year: 2015},
-        // {name: 'Mazda', year: 2020}
+        {name: 'BMW', year: 2015},
+        {name: 'Mazda', year: 2020}
       ],
       pageTitle: 'React components!',
       showCars: false
@@ -74,14 +77,18 @@ class App extends Component{
           <h1>{this.props.title}</h1>
           {/*используем CamelCase*/}
           {/*после название функции не нужно использовать: "()" чтобы метод не был вызван сразу же*/}
-
-          <Counter />
+          {/*используем контекст, убираем лишние цепочки в виде компонентов*/}
+          <ClickedContext.Provider value={this.state.clicked}>
+            <Counter />
+          </ClickedContext.Provider>
 
           <hr />
 
           {/*/!*метод bind будет возвращать новую функцию но вызывать её*!/*/}
           {/*<button onClick={this.changeTitleHadnler.bind(this, 'changed')}>Change title</button>*/}
           <button style={{marginTop: 20}} onClick={this.toggleCarsHandler}>Toggle Cars</button>
+
+          <button onClick={() => this.setState({clicked: true})}>Change clicked</button>
 
           {/*if, while запрещенны в jsx, но разрешены тернарники, поэтому:*/}
           {this.state.showCars
@@ -93,6 +100,8 @@ class App extends Component{
                     // title={this.props.title}
                     name={car.name}
                     year={car.year}
+                    // для референции
+                    index={item}
                     onDelete={this.deleteHandler.bind(this, item)}
                     onChangeName={(event) => this.onChangeName(event.target.value, item)}
                   />

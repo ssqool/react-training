@@ -12,6 +12,11 @@ import withClass from "../hoc/withClass";
 // 1 базовый класс и базовый компонент(наследуется от React компонента), а
 // все что внутри должно быть функциональными компонентами
 class Car extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.inputRef = React.createRef()
+  }
 
   // //Жизненные циклы
   //
@@ -53,8 +58,11 @@ class Car extends React.Component {
   //   console.log('Car componentWillUnmount')
   // }
 
+  //референция
   componentDidMount() {
-    this.inputRef.focus()
+    if (this.props.index === 0) {
+      this.inputRef.current.focus()
+    }
   }
 
 
@@ -80,7 +88,8 @@ class Car extends React.Component {
         <h1>Car name: {this.props.name}</h1>
         <h3>{this.props.year}</h3>
         <input
-          re={(inputRef) => this.inputRef = inputRef}
+          // Референция
+          ref={this.inputRef}
           type="text"
           onChange={this.props.onChangeName}
           value={this.props.name}
@@ -96,6 +105,7 @@ class Car extends React.Component {
 Car.propTypes = {
   name: PropTypes.string,
   year: PropTypes.number,
+  index: PropTypes.number,
   onChangeName: PropTypes.func,
   onDelete: PropTypes.func,
 }
